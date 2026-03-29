@@ -9,7 +9,9 @@ This is a best practices repository for Claude Code configuration, demonstrating
 ## Key Components
 
 ### Weather System (Example Workflow)
+
 A demonstration of two distinct skill patterns via the **Command → Agent → Skill** architecture:
+
 - `/weather-orchestrator` command (`.claude/commands/weather-orchestrator.md`): Entry point — asks user for C/F, invokes agent, then invokes SVG skill
 - `weather-agent` agent (`.claude/agents/weather-agent.md`): Fetches temperature using its preloaded `weather-fetcher` skill (agent skill pattern)
 - `weather-fetcher` skill (`.claude/skills/weather-fetcher/SKILL.md`): Preloaded into agent — instructions for fetching temperature from Open-Meteo
@@ -18,7 +20,9 @@ A demonstration of two distinct skill patterns via the **Command → Agent → S
 Two skill patterns: agent skills (preloaded via `skills:` field) vs skills (invoked via `Skill` tool). See `orchestration-workflow/orchestration-workflow.md` for the complete flow diagram.
 
 ### Skill Definition Structure
+
 Skills in `.claude/skills/<name>/SKILL.md` use YAML frontmatter:
+
 - `name`: Display name and `/slash-command` (defaults to directory name)
 - `description`: When to invoke (recommended for auto-discovery)
 - `argument-hint`: Autocomplete hint (e.g., `[issue-number]`)
@@ -31,10 +35,13 @@ Skills in `.claude/skills/<name>/SKILL.md` use YAML frontmatter:
 - `hooks`: Lifecycle hooks scoped to this skill
 
 ### Presentation System
+
 See `.claude/rules/presentation.md` — all presentation work is delegated to the `presentation-curator` agent.
 
 ### Hooks System
+
 Cross-platform sound notification system in `.claude/hooks/`:
+
 - `scripts/hooks.py`: Main handler for Claude Code hook events
 - `config/hooks-config.json`: Shared team configuration
 - `config/hooks-config.local.json`: Personal overrides (git-ignored)
@@ -47,7 +54,9 @@ Special handling: git commits trigger `pretooluse-git-committing` sound.
 ## Critical Patterns
 
 ### Subagent Orchestration
+
 Subagents **cannot** invoke other subagents via bash commands. Use the Agent tool (renamed from Task in v2.1.63; `Task(...)` still works as an alias):
+
 ```
 Agent(subagent_type="agent-name", description="...", prompt="...", model="haiku")
 ```
@@ -55,7 +64,9 @@ Agent(subagent_type="agent-name", description="...", prompt="...", model="haiku"
 Be explicit about tool usage in subagent definitions. Avoid vague terms like "launch" that could be misinterpreted as bash commands.
 
 ### Subagent Definition Structure
+
 Subagents in `.claude/agents/*.md` use YAML frontmatter:
+
 - `name`: Subagent identifier
 - `description`: When to invoke (use "PROACTIVELY" for auto-invocation)
 - `tools`: Comma-separated allowlist of tools (inherits all if omitted). Supports `Agent(agent_type)` syntax
@@ -73,6 +84,7 @@ Subagents in `.claude/agents/*.md` use YAML frontmatter:
 - `color`: CLI output color for visual distinction
 
 ### Configuration Hierarchy
+
 1. **Managed** (`managed-settings.json` / MDM plist / Registry): Organization-enforced, cannot be overridden
 2. Command line arguments: Single-session overrides
 3. `.claude/settings.local.json`: Personal project settings (git-ignored)
@@ -81,6 +93,7 @@ Subagents in `.claude/agents/*.md` use YAML frontmatter:
 6. `hooks-config.local.json` overrides `hooks-config.json`
 
 ### Disable Hooks
+
 Set `"disableAllHooks": true` in `.claude/settings.local.json`, or disable individual hooks in `hooks-config.json`.
 
 ## Answering Best Practice Questions
@@ -109,6 +122,7 @@ From experience with this repository:
 ## Documentation
 
 See `.claude/rules/markdown-docs.md` for documentation standards. Key docs:
+
 - `best-practice/claude-subagents.md`: Subagent frontmatter, hooks, and repository agents
 - `best-practice/claude-commands.md`: Slash command patterns and built-in command reference
 - `orchestration-workflow/orchestration-workflow.md`: Weather system flow diagram
